@@ -29,8 +29,16 @@ function searchWeather(city){
         // console.log(response.name)
         var cityName = response.name;
         savetoStorage(cityName)
+ 
+        $(".cityName").html("<h2>" + response.name  + "</h2>");
+ $(".wind").text("Wind Speed: " + response.wind.speed + " MPH");
+ $(".humidity").text("Humidity: " + (response.main.humidity) + " F");
+ $(".temp").text("Temperture: " + convertKelvinToF (response.main.temp) + " F");
     }) 
 } 
+function convertKelvinToF(kelvin) {
+    return parseInt((kelvin - 273.15) * 1.8 + 32);
+  };
 
 function savetoStorage(data){
 
@@ -38,24 +46,17 @@ function savetoStorage(data){
     currentData.push(data)
     localStorage.setItem("savedCities", JSON.stringify(currentData))
 };
-
-localStorage.setItem("lastCity", userInput);
-
-        var localStorageCities = JSON.parse(localStorage.getItem("lastCity"));
-
-   
-
-$.ajax({
-    url: queryURL,
-    method:"GET", 
-}).then(function(response){ 
-console.log(queryURL);
-console.log(response);
-
-$(".city").html("<h2>" + response.name + "" + currentdate + "<h2>" + "<img src= http://openweathermap.org/img/wn/" + response.weather.icon + "@2x.png> ");
- $(".wind").text("Wind Speed: " + response.wind.speed);
- $(".humidity").text("Temperture: " + response.main.humidity);
- $(".temp").text("Temperture: " + response.main.Temp);
+ 
+function showButtons(){
+    var currentData = JSON.parse(localStorage.getItem("savedCities"))||[]
+    currentData.forEach( function(data){
+        console.log(data);
+        var button = $("<button>")
+        button.text(data)
+        $(".Previous_Searches").append(button)
+    })
+}
+showButtons()
  });
 // searchWeather("Atlanta")
 // var search = document.querySelector(".search");
@@ -66,4 +67,4 @@ $(".city").html("<h2>" + response.name + "" + currentdate + "<h2>" + "<img src= 
 
 // var uvURL = "http://api.openweathermap.org/data/2.5/uvi?lat={lat}&lon={lon}&appid="
 // 
-})
+
